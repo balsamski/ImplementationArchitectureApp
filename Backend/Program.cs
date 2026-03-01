@@ -15,6 +15,7 @@ builder.Services.AddDbContext<FileMetadataDbContext>(options =>
 builder.Services.AddScoped<IDatabaseHealthService, PostgresDatabaseHealthService>();
 builder.Services.AddScoped<IRedisHealthService, RedisHealthService>();
 builder.Services.AddScoped<IRabbitMqHealthService, RabbitMqHealthService>();
+builder.Services.AddScoped<IFileLocationPublisher, RabbitMqFileLocationPublisher>();
 builder.Services.AddScoped<IFileMetadataService, PostgresFileMetadataService>();
 builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = builder.Configuration.GetConnectionString("Redis"));

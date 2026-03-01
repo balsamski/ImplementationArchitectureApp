@@ -1,5 +1,6 @@
 using Backend.Api.Infrastructure.Storage;
 using Backend.Api.Infrastructure.Database;
+using Backend.Api.Infrastructure.RabbitMq;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@ public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, Uploa
 
     private readonly IFileStorageService _storageService;
     private readonly IFileMetadataService _metadataService;
+    private readonly IFileLocationPublisher _fileLocationPublisher;
     private readonly IDistributedCache _cache;
     private readonly ILogger<UploadFileCommandHandler> _logger;
     private readonly string _bucketName;
@@ -20,12 +22,14 @@ public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, Uploa
     public UploadFileCommandHandler(
         IFileStorageService storageService,
         IFileMetadataService metadataService,
+        IFileLocationPublisher fileLocationPublisher,
         IDistributedCache cache,
         ILogger<UploadFileCommandHandler> logger,
         IConfiguration configuration)
     {
         _storageService = storageService;
         _metadataService = metadataService;
+        _fileLocationPublisher = fileLocationPublisher;
         _cache = cache;
         _logger = logger;
         _bucketName = configuration["Minio:BucketName"] ?? "app-files";
@@ -53,13 +57,15 @@ public class UploadFileCommandHandler : IRequestHandler<UploadFileCommand, Uploa
 
         var uploadDate = DateTime.UtcNow;
         var fileNameWithUploadDate = BuildFileNameWithUploadDate(request.FileName, uploadDate);
+        var fileLocation = $"{_bucketName}/{fileNameWithUploadDate}";
 
         await _storageService.UploadAsync(fileNameWithUploadDate, data, cancellationToken);
         await _metadataService.LogFileUploadAsync(
             fileNameWithUploadDate,
-            $"{_bucketName}/{fileNameWithUploadDate}",
+            fileLocation,
             uploadDate,
             cancellationToken);
+        await _fileLocationPublisher.PublishAsync(fileLocation, cancellationToken);
         await _cache.RemoveAsync(FilesCacheKey, cancellationToken);
         _logger.LogInformation("UploadFileCommandHandler: stored {FileName} ({Bytes} bytes) in {Bucket}", fileNameWithUploadDate, data.Length, _bucketName);
         return new UploadFileResult(_bucketName, fileNameWithUploadDate, data.Length);
