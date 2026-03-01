@@ -1,5 +1,5 @@
 using Backend.Api.Application.File.Commands.UploadFile;
-using Backend.Api.Infrastructure.Database;
+using Backend.Api.Application.File.Queries.GetUploadedFiles;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,13 +12,11 @@ public class FileController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly ILogger<FileController> _logger;
-    private readonly IFileMetadataService _metadataService;
 
-    public FileController(IMediator mediator, ILogger<FileController> logger, IFileMetadataService metadataService)
+    public FileController(IMediator mediator, ILogger<FileController> logger)
     {
         _mediator = mediator;
         _logger = logger;
-        _metadataService = metadataService;
     }
 
     [HttpPost]
@@ -46,7 +44,7 @@ public class FileController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUploadedFiles(CancellationToken cancellationToken)
     {
-        var files = await _metadataService.GetUploadedFilesAsync(cancellationToken);
+        var files = await _mediator.Send(new GetUploadedFilesQuery(), cancellationToken);
         return Ok(files);
     }
 }

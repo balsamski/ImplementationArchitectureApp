@@ -16,6 +16,8 @@ builder.Services.AddScoped<IDatabaseHealthService, PostgresDatabaseHealthService
 builder.Services.AddScoped<IRedisHealthService, RedisHealthService>();
 builder.Services.AddScoped<IRabbitMqHealthService, RabbitMqHealthService>();
 builder.Services.AddScoped<IFileMetadataService, PostgresFileMetadataService>();
+builder.Services.AddStackExchangeRedisCache(options =>
+    options.Configuration = builder.Configuration.GetConnectionString("Redis"));
 builder.Services.AddHttpClient<IMinioHealthService, MinioHealthService>();
 builder.Services.AddScoped<IFileStorageService, MinioFileStorageService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
