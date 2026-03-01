@@ -20,6 +20,7 @@ services:
       Minio__Endpoint: ${MINIO_ENDPOINT}
       Minio__RootUser: ${MINIO_ROOT_USER}
       Minio__RootPassword: ${MINIO_ROOT_PASSWORD}
+      Minio__BucketName: ${MINIO_BUCKET_NAME}
   postgres:
     image: postgres:15
     environment:
