@@ -21,6 +21,24 @@ services:
       Minio__RootUser: ${MINIO_ROOT_USER}
       Minio__RootPassword: ${MINIO_ROOT_PASSWORD}
       Minio__BucketName: ${MINIO_BUCKET_NAME}
+  worker:
+    image: ${DOCKER_REGISTRY-}worker
+    build:
+      context: .
+      dockerfile: Worker/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      AzureWebJobsStorage: UseDevelopmentStorage=true
+      FUNCTIONS_WORKER_RUNTIME: dotnet-isolated
+      RabbitMqConnection: ${ConnectionStrings__RabbitMq}
+      Minio__Endpoint: ${MINIO_ENDPOINT}
+      Minio__RootUser: ${MINIO_ROOT_USER}
+      Minio__RootPassword: ${MINIO_ROOT_PASSWORD}
+      Minio__BucketName: ${MINIO_BUCKET_NAME}
   postgres:
     image: postgres:15
     environment:

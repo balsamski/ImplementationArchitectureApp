@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Worker/Worker.csproj" Id="03aed727-870d-4de6-a298-0d1adc1ae7ec" />
   <Project Path="Backend/Backend.csproj" />
   <Project Path="ImplementationArchitectureApp.dcproj">
     <Build />
