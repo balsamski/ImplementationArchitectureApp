@@ -24,6 +24,10 @@ GET {{Backend_HostAddress}}api/HealthCheck/redis
 Accept: application/json
 ###
 
+GET {{Backend_HostAddress}}api/File
+Accept: application/json
+###
+
 POST {{Backend_HostAddress}}api/File
 Accept: application/json
 Content-Type: application/json

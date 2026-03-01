@@ -1,4 +1,5 @@
 using Backend.Api.Application.File.Commands.UploadFile;
+using Backend.Api.Infrastructure.Database;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,11 +12,13 @@ public class FileController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly ILogger<FileController> _logger;
+    private readonly IFileMetadataService _metadataService;
 
-    public FileController(IMediator mediator, ILogger<FileController> logger)
+    public FileController(IMediator mediator, ILogger<FileController> logger, IFileMetadataService metadataService)
     {
         _mediator = mediator;
         _logger = logger;
+        _metadataService = metadataService;
     }
 
     [HttpPost]
@@ -38,5 +41,12 @@ public class FileController : ControllerBase
             _logger.LogWarning(ex, "FileController: bad request for {FileName}", command.FileName);
             return BadRequest(ex.Message);
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUploadedFiles(CancellationToken cancellationToken)
+    {
+        var files = await _metadataService.GetUploadedFilesAsync(cancellationToken);
+        return Ok(files);
     }
 }
