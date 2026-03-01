@@ -1,0 +1,25 @@
+@Backend_HostAddress = https://localhost:8081/
+
+GET {{Backend_HostAddress}}weatherforecast/
+Accept: application/json
+###
+
+GET {{Backend_HostAddress}}api/HealthCheck/app
+Accept: application/json
+###
+
+GET {{Backend_HostAddress}}api/HealthCheck/database
+Accept: application/json
+###
+
+GET {{Backend_HostAddress}}api/HealthCheck/RabbitMq
+Accept: application/json
+###
+
+GET {{Backend_HostAddress}}api/HealthCheck/Minio
+Accept: application/json
+###
+
+GET {{Backend_HostAddress}}api/HealthCheck/redis
+Accept: application/json
+###
