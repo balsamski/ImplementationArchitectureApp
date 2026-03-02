@@ -5,10 +5,17 @@ using Backend.Api.Infrastructure.Redis;
 using Backend.Api.Infrastructure.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
+var corsAllowedOrigins = (builder.Configuration["Cors:AllowedOrigins"] ?? string.Empty)
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+    options.AddPolicy("FrontendCors", policy =>
+        policy.WithOrigins(corsAllowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()));
 builder.Services.AddMediatR(opts => opts.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddDbContext<FileMetadataDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
@@ -40,6 +47,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("FrontendCors");
 
 app.UseAuthorization();
 

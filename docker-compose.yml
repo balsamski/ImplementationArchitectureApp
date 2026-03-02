@@ -17,6 +17,7 @@ services:
       ConnectionStrings__Postgres: ${ConnectionStrings__Postgres}
       ConnectionStrings__Redis: ${ConnectionStrings__Redis}
       ConnectionStrings__RabbitMq: ${ConnectionStrings__RabbitMq}
+      Cors__AllowedOrigins: ${CORS_ALLOWED_ORIGINS}
       Minio__Endpoint: ${MINIO_ENDPOINT}
       Minio__RootUser: ${MINIO_ROOT_USER}
       Minio__RootPassword: ${MINIO_ROOT_PASSWORD}
@@ -39,6 +40,15 @@ services:
       Minio__RootUser: ${MINIO_ROOT_USER}
       Minio__RootPassword: ${MINIO_ROOT_PASSWORD}
       Minio__BucketName: ${MINIO_BUCKET_NAME}
+  frontend:
+    image: ${DOCKER_REGISTRY-}frontend
+    build:
+      context: .
+      dockerfile: Frontend/Dockerfile
+      args:
+        BACKEND_API_URL: ${FRONTEND_BACKEND_API_URL}
+    ports:
+      - "4200:80"
   postgres:
     image: postgres:15
     environment:

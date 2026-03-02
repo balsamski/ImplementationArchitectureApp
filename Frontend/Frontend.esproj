@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1948920">
+  <PropertyGroup>
+    <ShouldRunNpmInstall>false</ShouldRunNpmInstall>
+    <StartupCommand>docker compose up frontend</StartupCommand>
+    <BuildCommand>docker compose build frontend</BuildCommand>
+    <CleanCommand>docker compose rm -sf frontend</CleanCommand>
+  </PropertyGroup>
+</Project>
