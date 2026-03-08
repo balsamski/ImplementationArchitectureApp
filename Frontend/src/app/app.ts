@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,7 @@ export class App {
   protected isError = false;
   protected isSubmitting = false;
 
-  private readonly backendUrl = '__BACKEND_API_URL__';
+  private readonly backendUrl = environment.backendApiUrl;
 
   protected onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

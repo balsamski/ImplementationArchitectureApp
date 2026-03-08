@@ -5,4 +5,7 @@
     <BuildCommand>docker compose build frontend</BuildCommand>
     <CleanCommand>docker compose rm -sf frontend</CleanCommand>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="src\assets\" />
+  </ItemGroup>
 </Project>
