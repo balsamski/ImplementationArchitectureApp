@@ -33,4 +33,21 @@ public class PostgresDatabaseHealthService : IDatabaseHealthService
             return false;
         }
     }
+
+    public string? GetHostIp()
+    {
+        try
+        {
+            var connectionString = _configuration.GetConnectionString("Postgres");
+            if (string.IsNullOrWhiteSpace(connectionString))
+                return null;
+
+            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+            return connectionStringBuilder.Host;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }

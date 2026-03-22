@@ -19,9 +19,13 @@ public class GetDatabaseHealthQueryHandler : IRequestHandler<GetDatabaseHealthQu
     {
         _logger.LogInformation("GetDatabaseHealthQueryHandler: starting database health check");
         var canConnect = await _databaseHealthService.CanConnectAsync(cancellationToken);
+        var hostIp = _databaseHealthService.GetHostIp();
+
+        var successMessage = $"Database connection is healthy, DB Server: {hostIp}";
+        var failureMessage = $"Database connection failed, DB Server: {hostIp}";
 
         return canConnect
-            ? new GetDatabaseHealthResponse(true, "Database connection is healthy", DateTime.UtcNow)
-            : new GetDatabaseHealthResponse(false, "Database connection failed", DateTime.UtcNow);
+            ? new GetDatabaseHealthResponse(true, successMessage, hostIp, DateTime.UtcNow)
+            : new GetDatabaseHealthResponse(false, failureMessage, hostIp, DateTime.UtcNow);
     }
 }
