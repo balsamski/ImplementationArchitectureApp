@@ -19,9 +19,13 @@ public class GetMinioHealthQueryHandler : IRequestHandler<GetMinioHealthQuery, G
     {
         _logger.LogInformation("GetMinioHealthQueryHandler: pinging MinIO endpoint");
         var canConnect = await _minioHealthService.CanConnectAsync(cancellationToken);
+        var hostIp = _minioHealthService.GetHostIp();
+
+        var successMessage = $"MinIO is reachable, MinIO Server: {hostIp}";
+        var failureMessage = $"MinIO health check failed, MinIO Server: {hostIp}";
 
         return canConnect
-            ? new GetMinioHealthResponse(true, "MinIO is reachable", DateTime.UtcNow)
-            : new GetMinioHealthResponse(false, "MinIO health check failed", DateTime.UtcNow);
+            ? new GetMinioHealthResponse(true, successMessage, hostIp, DateTime.UtcNow)
+            : new GetMinioHealthResponse(false, failureMessage, hostIp, DateTime.UtcNow);
     }
 }

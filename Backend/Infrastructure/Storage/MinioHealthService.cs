@@ -44,6 +44,22 @@ public class MinioHealthService : IMinioHealthService
         }
     }
 
+    public string? GetHostIp()
+    {
+        try
+        {
+            var endpoint = _configuration["Minio:Endpoint"];
+            if (string.IsNullOrWhiteSpace(endpoint))
+                return null;
+
+            return endpoint;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private static Uri BuildHealthUri(string baseEndpoint)
     {
         var baseUri = baseEndpoint.EndsWith("/") ? baseEndpoint.TrimEnd('/') : baseEndpoint;
